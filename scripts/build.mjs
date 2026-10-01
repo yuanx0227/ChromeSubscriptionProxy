@@ -1,0 +1,13 @@
+import {build} from 'esbuild';
+import {mkdir, cp, readFile, writeFile} from 'node:fs/promises';
+import {buildPAC} from '../extension/src/pac.js';
+const data = JSON.parse(await readFile('extension/src/routing-data.json', 'utf8'));
+buildPAC({nodes: [], selectedId: null, subscriptionUrl: '', rules: {proxy: [], direct: []}}, data);
+await mkdir('dist/extension', {recursive: true});
+await cp('extension/public', 'dist/extension', {recursive: true});
+await cp('docs/licenses', 'dist/extension/licenses', {recursive: true});
+await cp('extension/src/routing-data.json', 'dist/extension/routing-data.json');
+await build({entryPoints: ['extension/src/background.js', 'extension/src/ui.js'], outdir: 'dist/extension', bundle: true, format: 'esm', target: 'chrome120', legalComments: 'eof'});
+const pkg = JSON.parse(await readFile('node_modules/yaml/package.json', 'utf8'));
+await writeFile('dist/extension/THIRD_PARTY_NOTICES.txt', `yaml ${pkg.version}\n` + await readFile('node_modules/yaml/LICENSE', 'utf8'));
+console.log('Built dist/extension (load this directory in Chrome).');

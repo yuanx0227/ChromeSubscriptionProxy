@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh Qingkong routing data daily
+
+[Timer]
+OnCalendar=*-*-* 00:15:00 UTC
+RandomizedDelaySec=10m
+Persistent=true
+Unit=qingkong-rules.service
+
+[Install]
+WantedBy=timers.target

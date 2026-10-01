@@ -1,0 +1,29 @@
+[Unit]
+Description=Chrome subscription adapter and identity-isolated Xray bridge
+After=network-online.target x-ui.service caddy.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/chrome-subscription-proxy/server
+ExecStart=/opt/chrome-subscription-proxy/.venv/bin/python /opt/chrome-subscription-proxy/server/service.py --config /etc/chrome-subscription-proxy/config.json
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/chrome-subscription-proxy
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID CAP_CHOWN CAP_DAC_OVERRIDE CAP_FOWNER CAP_NET_ADMIN CAP_KILL
+
+[Install]
+WantedBy=multi-user.target

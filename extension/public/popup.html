@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>晴空</title><link rel="stylesheet" href="style.css"></head>
+<body class="popup">
+  <header class="brand-header"><div class="brand"><img class="logo" src="icons/icon128.png" alt=""><span>晴空</span></div><button id="settings" class="text-button">设置</button></header>
+  <main>
+    <div class="status-display"><span id="dot" class="dot"></span><h1 id="status">读取中</h1></div>
+    <section class="popup-connect">
+      <label for="node">线路</label><select id="node"><option value="">请选择线路</option></select>
+      <button id="toggle" class="primary wide" disabled>连接</button><button id="setup" class="primary wide" hidden>添加订阅</button>
+      <div class="latency"><span id="latency">未检测</span><button id="probe" class="text-button">测延迟</button></div>
+    </section>
+    <div class="popup-bottom"><span id="updated"></span><button id="refresh" class="text-button">更新订阅</button></div>
+    <p id="notice" class="message notice" role="status" aria-live="polite"></p><p id="error" class="message error" role="alert"></p><p id="success" class="message success" role="status"></p>
+  </main>
+<script type="module" src="ui.js"></script>
+</body></html>

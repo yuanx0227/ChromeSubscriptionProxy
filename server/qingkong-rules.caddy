@@ -1,0 +1,10 @@
+# Merge inside the existing bwh.yxzyl.cn HTTPS site, before its final fallback.
+# The public response contains only upstream routing data, never subscription credentials.
+handle /qingkong/routing-v1.json {
+    root * /var/lib/qingkong-rules
+    rewrite * /routing-v1.json
+    header Content-Type "application/json; charset=utf-8"
+    header Cache-Control "no-cache"
+    header X-Content-Type-Options "nosniff"
+    file_server
+}

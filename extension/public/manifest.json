@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "晴空 · 订阅代理",
+  "version": "0.3.6",
+  "description": "导入个人 CLASH 订阅，手动选线与 Smart 分流。",
+  "minimum_chrome_version": "120",
+  "permissions": ["proxy", "storage", "alarms", "webRequest", "webRequestAuthProvider"],
+  "host_permissions": ["<all_urls>"],
+  "background": {"service_worker": "background.js", "type": "module"},
+  "icons": {"16":"icons/icon16.png","32":"icons/icon32.png","48":"icons/icon48.png","128":"icons/icon128.png"},
+  "action": {"default_popup": "popup.html", "default_title": "晴空 · 订阅代理", "default_icon":{"16":"icons/icon16.png","32":"icons/icon32.png"}},
+  "options_page": "options.html",
+  "incognito": "spanning",
+  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'none'"}
+}

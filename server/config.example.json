@@ -1,0 +1,15 @@
+{
+  "domain": "bwh.yxzyl.cn",
+  "clash_path_prefix": "/REPLACE_WITH_EXISTING_CLASH_PREFIX/",
+  "panel_db": "/etc/x-ui/x-ui.db",
+  "upstream_port": 2096,
+  "listen_port": 2097,
+  "state_dir": "/var/lib/chrome-subscription-proxy",
+  "xray_binary": "/usr/local/x-ui/bin/REPLACE_WITH_ACTUAL_XRAY_BINARY",
+  "bridge_user": "chrome-proxy",
+  "certificate_source": "/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/bwh.yxzyl.cn/bwh.yxzyl.cn.crt",
+  "private_key_source": "/var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/bwh.yxzyl.cn/bwh.yxzyl.cn.key",
+  "port_first": 18443,
+  "port_last": 18542,
+  "sync_seconds": 30
+}

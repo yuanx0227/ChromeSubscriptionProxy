@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>晴空 · 设置</title><link rel="stylesheet" href="style.css"></head>
+<body class="options">
+<div class="workspace">
+  <header class="brand-header"><div class="brand"><img class="logo" src="icons/icon128.png" alt=""><h1>晴空</h1></div><span class="page-title">设置</span></header>
+  <main>
+    <div class="dashboard">
+      <section class="card subscription-card" aria-labelledby="subscription-title">
+        <h2 id="subscription-title">订阅</h2>
+        <label for="url">订阅地址</label>
+        <div class="input-row"><input id="url" type="password" autocomplete="off" spellcheck="false" placeholder="https://…"><button id="show-url" class="icon-button" aria-label="显示订阅地址" title="显示订阅地址"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <div class="subscription-actions"><button id="import" class="primary">保存并更新</button><span id="count" class="muted"></span></div>
+        <p id="updated" class="updated"></p>
+        <details class="compatibility" id="compatibility" hidden><summary>未导入节点</summary><ul id="unsupported"></ul></details>
+      </section>
+      <section class="card connection-card" aria-labelledby="connection-title">
+        <div class="section-heading"><h2 id="connection-title">连接</h2><span class="status-chip"><span id="dot" class="dot"></span><span id="status">读取中</span></span></div>
+        <label for="node">线路</label>
+        <select id="node"><option value="">请选择线路</option></select>
+        <button id="toggle" class="primary wide" disabled>连接</button>
+        <div class="latency"><span id="latency">未检测</span><button id="probe" class="text-button">测延迟</button></div>
+      </section>
+    </div>
+    <section class="card rules-card">
+      <details id="rules-panel">
+        <summary class="rules-summary"><strong>网站规则</strong><span id="rules-count" class="rule-count"></span><svg class="chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m5 8 5 5 5-5"/></svg></summary>
+        <div class="rules-content"><div class="routing-update"><span id="routing-updated" class="muted"></span><button id="refresh-routing" class="text-button">更新规则</button><a href="rules-sources.html" target="_blank" rel="noopener">规则来源</a></div><p id="routing-error" class="message notice" role="status"></p><p class="muted">每行一个域名，包含子域名。</p><div class="columns"><div><label for="proxy">始终加速</label><textarea id="proxy" rows="5" spellcheck="false" placeholder="example.com"></textarea></div><div><label for="direct">始终直连</label><textarea id="direct" rows="5" spellcheck="false" placeholder="example.cn"></textarea></div></div><div class="rule-actions"><button id="save-rules" class="primary">保存规则</button></div></div>
+      </details>
+    </section>
+    <p id="notice" class="message notice" role="status" aria-live="polite"></p><p id="error" class="message error" role="alert"></p><p id="success" class="message success" role="status" aria-live="polite"></p>
+  </main>
+</div>
+<script type="module" src="ui.js"></script>
+</body></html>

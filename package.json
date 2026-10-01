@@ -1,0 +1,18 @@
+{
+  "name": "chrome-subscription-proxy",
+  "version": "0.3.6",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "pack": "npm run build && node scripts/pack.mjs",
+    "check": "node --test checks/extension.test.mjs"
+  },
+  "dependencies": {
+    "yaml": "2.8.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "playwright": "1.63.0"
+  }
+}

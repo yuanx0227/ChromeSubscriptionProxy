@@ -1,0 +1,23 @@
+[Unit]
+Description=Update Qingkong declarative routing data
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=chrome-proxy
+Group=chrome-proxy
+ExecStart=/usr/bin/python3 /opt/qingkong-rules/routing_update.py --out /var/lib/qingkong-rules/routing-v1.json
+StateDirectory=qingkong-rules
+StateDirectoryMode=0755
+UMask=0022
+TimeoutStartSec=120
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
