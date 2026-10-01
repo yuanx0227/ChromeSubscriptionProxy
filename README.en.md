@@ -13,14 +13,9 @@ A proxy extension for Chrome on Windows. Import a CLASH subscription, choose a n
 
 ## Install
 
-Requires **Chrome 120+ and Node.js 22+**. Download the source and run from the project root:
+Installing and running the extension requires only **Chrome 120+**. Node.js is not needed.
 
-```powershell
-npm ci --ignore-scripts --no-audit --no-fund
-npm run build
-```
-
-Open `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select `dist/extension`.
+Open `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select the built extension directory (`dist/extension` in this project). To build from source, see [Development](#development).
 
 ## Use
 
@@ -32,9 +27,19 @@ The subscription must include authenticated HTTPS proxy nodes (`type: http`, `tl
 
 Subscriptions and credentials stay on your device. Proxy requests do not fall back to direct connections on failure; only browser traffic is covered. Enable **Allow in incognito** in extension details to use incognito windows.
 
+## Screenshots
+
+![Settings](docs/screenshots/settings-v3.png)
+
+![Popup](docs/screenshots/popup-v3.png)
+
 ## Development
 
+Building from source requires **Node.js 22+**. Run from the project root:
+
 ```powershell
+npm ci --ignore-scripts --no-audit --no-fund
+npm run build                   # Generate dist/extension
 npm run pack                    # Generate CRX3 in releases/
 python scripts/update-routing.py # Update bundled rules (Python 3.9+)
 ```

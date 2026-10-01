@@ -13,14 +13,9 @@ Windows Chrome 代理扩展。导入 CLASH 订阅即可选线连接，无需插�
 
 ## 安装
 
-需要 **Chrome 120+、Node.js 22+**。下载源码，在项目根目录执行：
+安装和运行只需 **Chrome 120+**，无需 Node.js。
 
-```powershell
-npm ci --ignore-scripts --no-audit --no-fund
-npm run build
-```
-
-Chrome 打开 `chrome://extensions` → 开启「开发者模式」→「加载已解压的扩展程序」→ 选择 `dist/extension`。
+Chrome 打开 `chrome://extensions` → 开启「开发者模式」→「加载已解压的扩展程序」→ 选择已构建的扩展目录（本项目为 `dist/extension`）。从源码构建见[开发](#开发)。
 
 ## 使用
 
@@ -32,9 +27,19 @@ Chrome 打开 `chrome://extensions` → 开启「开发者模式」→「加载�
 
 订阅和凭据保存在本机。应代理请求失败时不自动直连；代理范围仅限浏览器。使用无痕窗口需在扩展详情中开启「在无痕模式下启用」。
 
+## 界面
+
+![设置页](docs/screenshots/settings-v3.png)
+
+![弹窗](docs/screenshots/popup-v3.png)
+
 ## 开发
 
+从源码构建需要 **Node.js 22+**，在项目根目录执行：
+
 ```powershell
+npm ci --ignore-scripts --no-audit --no-fund
+npm run build                   # 生成 dist/extension
 npm run pack                    # 生成 CRX3 到 releases/
 python scripts/update-routing.py # 更新内置规则（Python 3.9+）
 ```
