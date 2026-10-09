@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "晴空 · 订阅代理",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "导入个人 CLASH 订阅，手动选线与 Smart 分流。",
   "minimum_chrome_version": "120",
   "permissions": ["proxy", "storage", "alarms", "webRequest", "webRequestAuthProvider"],

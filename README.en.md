@@ -49,6 +49,8 @@ For **Chrome 120+ on Windows**. The extension directory is `dist/extension`; sou
 - **Update the extension:** replace the extension files, then click **Reload** at `chrome://extensions`.
 - **Incognito:** enable **Allow in incognito** in extension details.
 
+Version 0.3.7 authenticates the proxy automatically after connecting and restoring a session to reduce startup credential prompts. See the [change and limitations](docs/PROXY-AUTH-0.3.7.md) (Chinese).
+
 Subscriptions and credentials stay on your device. Routing applies to Chrome proxy requests; requests assigned to a proxy do not switch to direct connections on failure.
 
 ## Local build

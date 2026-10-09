@@ -9,13 +9,17 @@ let state, expectedPAC = '', serial = Promise.resolve(), routingData = bundledRo
 let lastSuccessfulProbeAt = 0;
 let activeProbe = null, healthPending = false, recheckTimer;
 const attempts = new Map();
-const ready = (async () => {
+// Authentication must not wait for session health or the large routing cache.
+const authReady = (async () => {
   await chrome.storage.local.setAccessLevel({accessLevel: 'TRUSTED_CONTEXTS'});
   const saved = (await chrome.storage.local.get('config')).config;
   if (saved && saved.schema !== 1) throw new Error('配置版本不受支持');
   state = saved ? {...initial, ...saved} : structuredClone(initial);
   // Runtime health is scoped to the browser session, not persisted across restarts.
   state.proxyError = ''; state.proxyErrorFatal = false; state.latency = null;
+})();
+const ready = (async () => {
+  await authReady;
   const health = (await chrome.storage.session.get('proxyHealth')).proxyHealth;
   if (health?.revision === state.connectionRevision) {
     state.proxyError = health.error || ''; state.latency = health.latency || null;
@@ -81,6 +85,11 @@ async function apply() {
     await badge('!', '#b91c1c');
   }
   await save();
+  // Seed Chrome's proxy auth cache for requests from other extensions, whose
+  // authentication events Chrome does not expose to this worker. Stay off the
+  // configuration queue while requesting, so disconnect/select remain usable.
+  if (!state.applyError && !activeProbe && !healthPending && !lastSuccessfulProbeAt && state.nodes.some(n => n.id === state.selectedId))
+    void runProbe(false).catch(() => {});
 }
 async function publicState() {
   const current = await proxySettings();
@@ -208,10 +217,16 @@ async function refresh(value) {
 }
 
 chrome.webRequest.onAuthRequired.addListener((details, callback) => {
-  ready.then(() => {
+  authReady.then(() => {
     const host = details.challenger?.host?.toLowerCase().replace(/^\[|\]$/g, '');
     const node = state.enabled && state.nodes.find(n => n.id === state.selectedId);
-    if (!details.isProxy || !node || host !== node.host.replace(/^\[|\]$/g, '') || details.challenger.port !== node.port) { callback({}); return; }
+    const matches = n => host === n.host.replace(/^\[|\]$/g, '') && details.challenger.port === n.port;
+    if (!details.isProxy) { callback({}); return; }
+    if (!node || !matches(node)) {
+      // A request to one of our inactive endpoints must not open a login box
+      // during disconnect/selection. Leave unrelated proxies to their owner.
+      callback(state.nodes.some(matches) ? {cancel: true} : {}); return;
+    }
     if (attempts.has(details.requestId)) { callback({cancel: true}); return; }
     attempts.set(details.requestId, true);
     callback({authCredentials: {username: node.username, password: node.password}});
@@ -312,7 +327,11 @@ ready.then(async () => {
 chrome.alarms.onAlarm.addListener(alarm=>{
   if(alarm.name==='routing-catchup') queue(async()=>{if(Date.now()-routingCheckedAt>ROUTING_INTERVAL) await refreshRouting();}).catch(()=>{});
 });
-chrome.runtime.onStartup.addListener(() => queue(async () => {
-  if (state.enabled) await apply();
-  if (state.subscriptionUrl && Date.now() - (state.updatedAt || 0) > 86400000) await refresh();
-}).catch(() => {}));
+chrome.runtime.onStartup.addListener(() => {
+  // Queue the optional subscription fetch after restoration and auth warmup's
+  // validation, rather than delaying authentication behind a slow update.
+  queue(async () => { if (state.enabled) await apply(); })
+    .then(() => queue(async () => {
+      if (state.subscriptionUrl && Date.now() - (state.updatedAt || 0) > 86400000) await refresh();
+    })).catch(() => {});
+});
