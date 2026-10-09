@@ -29,6 +29,7 @@ Import your CLASH subscription, choose a node and connect in Chrome. Manage webs
 |---|---|
 | Subscriptions | Import CLASH, update daily and keep the last configuration on failure |
 | Smart routing | Default rules, IPv4 / IPv6 and custom proxy/direct domains |
+| Rule sync | Automatically sync routing rules and mainland China IP data daily; manual updates and cached fallback |
 | Connection control | Select a node, connect/disconnect and restore after restart |
 | Network checks | Measure the current node's latency and recheck after failures |
 
@@ -46,6 +47,7 @@ For **Chrome 120+ on Windows**. The extension directory is `dist/extension`; sou
 ## Everyday use
 
 - **Check latency:** run the latency check for the selected node.
+- **Update rules:** expand the website rules section in settings and click the rule update button.
 - **Update the extension:** replace the extension files, then click **Reload** at `chrome://extensions`.
 - **Incognito:** enable **Allow in incognito** in extension details.
 
