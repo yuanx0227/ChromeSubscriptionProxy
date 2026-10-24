@@ -18,8 +18,8 @@
     <th width="30%">弹窗</th>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/settings-readme.png" width="640" alt="晴空设置页"></td>
-    <td><img src="docs/screenshots/popup-v3.png" width="300" alt="晴空弹窗"></td>
+    <td><img src="docs/screenshots/settings-v4.png" width="640" alt="晴空设置页"></td>
+    <td><img src="docs/screenshots/popup-v4.png" width="300" alt="晴空弹窗"></td>
   </tr>
 </table>
 

@@ -18,8 +18,8 @@ Import your CLASH subscription, choose a node and connect in Chrome. Manage webs
     <th width="30%">Popup</th>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/settings-readme.png" width="640" alt="Qingkong settings"></td>
-    <td><img src="docs/screenshots/popup-v3.png" width="300" alt="Qingkong popup"></td>
+    <td><img src="docs/screenshots/settings-v4.png" width="640" alt="Qingkong settings"></td>
+    <td><img src="docs/screenshots/popup-v4.png" width="300" alt="Qingkong popup"></td>
   </tr>
 </table>
 

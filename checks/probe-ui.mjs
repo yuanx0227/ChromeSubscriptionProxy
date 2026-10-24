@@ -18,12 +18,12 @@ try{
  const action=(action,extra={})=>page.evaluate(args=>chrome.runtime.sendMessage(args),{action,...extra});
  await action('refresh',{url:'https://subscription.invalid/test'});await action('select',{id:'proxy.invalid:18443'});await action('connect');
  await page.goto(`chrome-extension://${id}/popup.html`);
- await page.getByText('代理已启用',{exact:true}).waitFor();
+ await page.getByText('已连接',{exact:true}).waitFor();
  await page.getByRole('button',{name:'测延迟',exact:true}).click();
  await page.getByText('检测中…',{exact:true}).waitFor();
  assert.equal(await page.getByRole('button',{name:'断开',exact:true}).isEnabled(),true);
  await page.getByRole('button',{name:'断开',exact:true}).click();
- await page.getByText('关闭',{exact:true}).waitFor();
+ await page.getByText('未连接',{exact:true}).waitFor();
  assert.equal(await page.locator('#latency').textContent(),'未检测');
  assert.equal(await page.locator('#notice').textContent(),'');
  console.log('Probe UI passed: disconnect stays usable while checking; cancelled result cannot overwrite closed state.');

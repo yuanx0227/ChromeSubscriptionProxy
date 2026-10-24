@@ -2,16 +2,30 @@
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>晴空</title><link rel="stylesheet" href="style.css"></head>
 <body class="popup">
-  <header class="brand-header"><div class="brand"><img class="logo" src="icons/icon128.png" alt=""><span>晴空</span></div><button id="settings" class="text-button">设置</button></header>
+  <header class="topbar">
+    <div class="brand"><img class="logo" src="icons/icon128.png" alt=""><span>晴空</span></div>
+    <button id="settings" class="icon-button" type="button" aria-label="设置" title="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
+  </header>
   <main>
-    <div class="status-display"><span id="dot" class="dot"></span><h1 id="status">读取中</h1></div>
-    <section class="popup-connect">
-      <label for="node">线路</label><select id="node"><option value="">请选择线路</option></select>
-      <button id="toggle" class="primary wide" disabled>连接</button><button id="setup" class="primary wide" hidden>添加订阅</button>
-      <div class="latency"><span id="latency">未检测</span><button id="probe" class="text-button">测延迟</button></div>
+    <section id="hero" class="hero" data-state="loading">
+      <button id="toggle" class="power" type="button" aria-label="连接" title="连接" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5V11"/><path d="M6.6 6.9a7.6 7.6 0 1 0 10.8 0"/></svg></button>
+      <div class="hero-body">
+        <p class="hero-status"><span class="dot"></span><span id="status">读取中</span></p>
+        <p id="current" class="hero-node"></p>
+      </div>
+      <div class="hero-meta">
+        <span id="latency-box" class="latency" title="预热后 3 次代理 HTTP 请求的中位数"><span class="latency-dot"></span><span id="latency">未检测</span></span>
+        <button id="probe" class="chip-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="m12 14 4-4.5"/></svg>测延迟</button>
+      </div>
+      <button id="setup" class="primary" type="button" hidden>添加订阅</button>
     </section>
-    <div class="popup-bottom"><span id="updated"></span><button id="refresh" class="text-button">更新订阅</button></div>
-    <p id="notice" class="message notice" role="status" aria-live="polite"></p><p id="error" class="message error" role="alert"></p><p id="success" class="message success" role="status"></p>
+    <div class="messages"><p id="notice" class="message notice" role="status" aria-live="polite"></p><p id="error" class="message error" role="alert"></p><p id="success" class="message success" role="status"></p></div>
+    <section class="nodes" aria-labelledby="nodes-title">
+      <div class="section-head"><h2 id="nodes-title">线路</h2><span id="count" class="muted"></span></div>
+      <div id="nodes" class="node-list" role="radiogroup" aria-labelledby="nodes-title"></div>
+      <p id="nodes-empty" class="empty-hint" hidden></p>
+    </section>
   </main>
+  <footer class="popup-footer"><span id="updated"></span><button id="refresh" class="text-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4.5H15"/></svg>更新订阅</button></footer>
 <script type="module" src="ui.js"></script>
 </body></html>
