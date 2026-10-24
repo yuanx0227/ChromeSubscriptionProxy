@@ -60,11 +60,10 @@ function findProxy(url, host) {
   if (host === 'localhost' || suffix(host, 'localhost') || suffix(host, 'local') || (host.indexOf('.') < 0 && host.indexOf(':') < 0) || local(host)) return 'DIRECT';
   if (host === subscriptionHost || host === routingHost) return 'DIRECT';
   if (host === probeHost) return proxy;
-  var literal = ipv4(host) >= 0 || ipv6(host), resolved = literal ? host : '';
-  if (!literal) { try { resolved = typeof dnsResolveEx === 'function' ? dnsResolveEx(host) : dnsResolve(host); } catch (e) {} }
-  var ips = (resolved || '').toLowerCase().split(';').map(function(x){return x.trim();}).filter(function(x) { return !!x; });
-  if (ips.length && ips.every(local)) return 'DIRECT';
+  // Domain decisions come before any DNS lookup: a lookup leaks proxied names to the
+  // local resolver, and a poisoned loopback/LAN answer must not override a proxy rule.
   for (var r = 0; r < rules.length; r++) if (suffix(host, rules[r][0])) return rules[r][1] ? proxy : 'DIRECT';
+  var literal = ipv4(host) >= 0 || !!ipv6(host);
   function cidr6(s, network) {
     var address = ipv6(s); if (!address) return false;
     for (var bits=network[0], k=0; bits>0; bits-=16, k++) {
@@ -89,6 +88,25 @@ function findProxy(url, host) {
     }
     return proxy;
   }
+  if (literal) return route(host);
+  // The first matching domain rule is final without DNS when no earlier address rule
+  // could choose the other action; otherwise ordered evaluation needs the address.
+  function withoutAddress() {
+    var seen = [false, false];
+    for (var i=0; i<sourceRules.length; i++) {
+      var entry=sourceRules[i], kind=entry[0], value=entry[1];
+      if (kind==='GEOIP' || ((kind==='IP-CIDR' || kind==='IP-CIDR6') && !entry[3])) { seen[entry[2]]=true; continue; }
+      if (kind==='FINAL' || (kind==='DOMAIN' && host===value) || (kind==='DOMAIN-SUFFIX' && suffix(host,value)) || (kind==='DOMAIN-KEYWORD' && host.indexOf(value)>=0))
+        return seen[1-entry[2]] ? '' : entry[2] ? proxy : 'DIRECT';
+    }
+    return '';
+  }
+  var decided = withoutAddress();
+  if (decided) return decided;
+  var resolved = '';
+  try { resolved = typeof dnsResolveEx === 'function' ? dnsResolveEx(host) : dnsResolve(host); } catch (e) {}
+  var ips = (resolved || '').toLowerCase().split(';').map(function(x){return x.trim();}).filter(function(x) { return !!x; });
+  if (ips.length && ips.every(local)) return 'DIRECT';
   // Chrome PAC does not expose which DNS answer it will use. Ambiguous results stay proxied.
   return ips.length ? (ips.every(function(ip){return route(ip)==='DIRECT';}) ? 'DIRECT' : proxy) : route('');
 }

@@ -45,9 +45,24 @@ test('untrusted routing data cannot insert code, unknown directives, fallback or
   assert.deepEqual(await fetchRouting(async()=>new Response(JSON.stringify(dataset),{headers:{'content-type':'application/json'}})),dataset);
 });
 test('Smart honors private networks, specific custom rules, domain and IP rules', () => {
-  const route = pac(state, {'private.example.com': '192.168.1.2', 'ip-cn.test': '1.0.1.1', 'ipv6-cn.test': '240e::10', 'mixed.test': '240e::10;2606:4700::1111'});
-  for (const h of ['localhost', 'printer', '127.0.0.1', '10.1.2.3', '172.16.1.1', '172.31.255.255', '192.168.1.2', '[::1]', 'fc00::1', 'fe80::1', '::ffff:192.168.1.2', 'private.example.com', 'local.example.com', 'a.local.example.com', 'baidu.com', 'www.baidu.com', 'ip-cn.test', 'ipv6-cn.test', 'subscription.example.com']) assert.equal(route(h), 'DIRECT', h);
-  for (const h of ['172.15.1.1', '172.32.1.1', 'unknown.test', 'example.com', 'a.example.com', 'notbaidu.com', 'mixed.test', 'www.gstatic.com', '2606:4700::1111']) assert.equal(route(h), 'HTTPS bridge.example.com:18443', h);
+  const route = pac(state, {'private.example.com': '192.168.1.2', 'private.test': '192.168.1.2', 'ip-cn.test': '1.0.1.1', 'ipv6-cn.test': '240e::10', 'mixed.test': '240e::10;2606:4700::1111'});
+  for (const h of ['localhost', 'printer', '127.0.0.1', '10.1.2.3', '172.16.1.1', '172.31.255.255', '192.168.1.2', '[::1]', 'fc00::1', 'fe80::1', '::ffff:192.168.1.2', 'private.test', 'local.example.com', 'a.local.example.com', 'baidu.com', 'www.baidu.com', 'ip-cn.test', 'ipv6-cn.test', 'subscription.example.com']) assert.equal(route(h), 'DIRECT', h);
+  for (const h of ['172.15.1.1', '172.32.1.1', 'unknown.test', 'example.com', 'a.example.com', 'notbaidu.com', 'mixed.test', 'www.gstatic.com', '2606:4700::1111', 'private.example.com']) assert.equal(route(h), 'HTTPS bridge.example.com:18443', h);
+});
+test('domain decisions skip local DNS, so poisoned answers cannot bypass proxy rules', () => {
+  const data = {...dataset, rules: [['DOMAIN-SUFFIX','early.test',1],['IP-CIDR',[0x08080800,0x080808ff],1,false],['DOMAIN-SUFFIX','proxied.test',1],['DOMAIN-SUFFIX','direct.test',0],['GEOIP','CN',0],['FINAL','',1]]};
+  const lookups = [], records = {'example.com': '127.0.0.1', 'proxied.test': '10.0.0.1', 'direct.test': '8.8.8.8', 'intranet.test': '10.0.0.2'};
+  const context = {dnsResolveEx: host => { lookups.push(host); return records[host] || ''; }};
+  vm.createContext(context); vm.runInContext(buildPAC(state, data), context);
+  const route = host => context.FindProxyForURL(`https://${host}/`, host);
+  assert.match(route('example.com'), /^HTTPS/);
+  assert.match(route('early.test'), /^HTTPS/);
+  assert.match(route('proxied.test'), /^HTTPS/);
+  assert.deepEqual(lookups, []);
+  // An earlier address rule with the other action still needs the address, in rule order.
+  assert.match(route('direct.test'), /^HTTPS/);
+  assert.equal(route('intranet.test'), 'DIRECT');
+  assert.deepEqual(lookups, ['direct.test', 'intranet.test']);
 });
 test('removed selection blocks only proxy routes and never appends a DIRECT fallback', () => {
   const route = pac({...state, nodes: []});

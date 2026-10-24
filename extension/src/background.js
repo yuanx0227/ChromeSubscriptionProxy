@@ -256,7 +256,7 @@ chrome.proxy.settings.onChange.addListener(() => queue(async () => {
     activeProbe?.controller.abort();healthPending=false;clearTimeout(recheckTimer);
     await chrome.alarms.clear('proxy-recheck');await saveHealth();await badge('!', '#b45309');
   } else if (state.enabled && state.proxyError) await scheduleHealthCheck();
-}));
+}).catch(() => badge('!', '#b91c1c').catch(() => {})));
 
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   const allowed = ['popup.html', 'options.html'].map(p => chrome.runtime.getURL(p));
